@@ -9,7 +9,7 @@ import { Contact } from './entity';
   imports: [
     TypeOrmModule.forRoot({
       database: 'postgres',
-      host: 'localhost', 
+      host: 'db', 
       type: 'postgres',
       password: 'postgres',
       port: 5432,
