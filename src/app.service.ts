@@ -17,7 +17,7 @@ constructor(
   private readonly contactRepository: Repository<Contact>
 ) {}
 
-  async identifyContact(ccontactDto: ContactBodyType): Promise<{contact:{
+  async identifyContact(contactDto: ContactBodyType): Promise<{contact:{
     primaryContactId: number;
     emails: string[];
     phoneNumbers: string[];
@@ -31,27 +31,27 @@ constructor(
     let secondaryContactIds: number[] = [];
     let contactCards: Contact[];
 
-    const { email, phone } = ccontactDto;
+    const { email, phoneNumber } = contactDto;
 
     //check if ccontact already exists 
     email && (contactByEmail = await this.contactRepository.findOne({
       where: { email }
     }));
-    phone && (contactByPhone = await this.contactRepository.findOne({
-      where: { phoneNumber: phone }
+    phoneNumber && (contactByPhone = await this.contactRepository.findOne({
+      where: { phoneNumber: phoneNumber }
     }));
 
     
     if(!contactByEmail && !contactByPhone){
       await this.contactRepository.save({
         email,
-        phoneNumber: phone,
+        phoneNumber,
         linkPrecedence: AppConstants.PRIMARY,
         linkedId: null,
         deletedAt: null,
       }); 
     }
-    else if(contactByEmail?.email === email && contactByEmail?.phoneNumber === phone) {
+    else if(contactByEmail?.email === email && contactByEmail?.phoneNumber === phoneNumber) {
       //do nothing
     }
     else if (contactByEmail && contactByPhone && (contactByEmail?.id != contactByPhone?.id)) {
@@ -68,13 +68,13 @@ constructor(
           }
         ); 
     }
-    else if((contactByEmail && phone) || (contactByPhone && email)){
+    else if((contactByEmail && phoneNumber) || (contactByPhone && email)){
       const isSecondary = contactByEmail ? contactByEmail.linkPrecedence === AppConstants.SECONDARY 
       : contactByPhone.linkPrecedence === AppConstants.SECONDARY;
 
       await this.contactRepository.save({
         email,
-        phoneNumber: phone,
+        phoneNumber,
         linkPrecedence: AppConstants.SECONDARY,
         linkedId: contactByEmail ? (isSecondary ? contactByEmail.linkedId : contactByEmail.id)
          : (isSecondary ? contactByPhone.linkedId : contactByPhone.id),
@@ -86,7 +86,7 @@ constructor(
     let contact = await this.contactRepository.findOne({
       where: [
         { email },
-        { phoneNumber: phone }
+        { phoneNumber }
       ]
     });
 

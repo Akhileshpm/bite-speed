@@ -8,8 +8,8 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Post('identify')
-  async identify(@Body(new ValidationPipe()) ccontactDto: ContactDto){
-    const contact = await this.appService.identifyContact(ccontactDto);
+  async identify(@Body(new ValidationPipe()) contactDto: ContactDto){
+    const contact = await this.appService.identifyContact(contactDto);
     return contact;
   }
 }

@@ -8,13 +8,14 @@ import { Contact } from './entity';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
+      database: 'postgres',
+      host: 'localhost', 
       type: 'postgres',
-      url: process.env.DATABASE_URL,
-      entities: ['**/*.entity.js'],
+      password: 'postgres',
+      port: 5432,
+      username: 'postgres',
+      entities: [Contact],
       synchronize: true,
-      ssl: {
-        rejectUnauthorized: false
-      }
     }),
     TypeOrmModule.forFeature([Contact])
 ],
